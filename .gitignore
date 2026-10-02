@@ -1,0 +1,45 @@
+# Dependencias
+node_modules/
+package-lock.json
+yarn.lock
+
+# Archivos generados por el launcher
+.minecraft/
+logs/
+*.log
+
+# Configuración local
+config/profiles.json
+config/launcher.json
+config/installed_versions.json
+config/mods_state.json
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*~
+
+# Builds
+dist/
+build/
+out/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# Variables de entorno
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace

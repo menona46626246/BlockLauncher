@@ -1,0 +1,35 @@
+{
+  "name": "adlauncher-minecraft",
+  "version": "1.0.1",
+  "description": "Launcher de Minecraft offline con soporte para Forge, Fabric, OptiFine y gestor de mods",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "start:node": "node main.js",
+    "build": "echo 'No build step required - proyecto interpretado'",
+    "test": "echo 'No tests configured yet'"
+  },
+  "keywords": [
+    "minecraft",
+    "launcher",
+    "adlauncher",
+    "offline",
+    "mods",
+    "forge",
+    "fabric"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "electron": "^31.0.0",
+    "uuid": "^9.0.1"
+  },
+  "optionalDependencies": {
+    "adlauncher-core": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,1037 @@
+/**
+ * styles.css - Estilos del launcher
+ * 
+ * Tema oscuro inspirado en TLauncher.
+ * Paleta de colores:
+ *   - Fondo principal: #1a1a1a
+ *   - Paneles: #2a2a2a
+ *   - Bordes: #3a3a3a
+ *   - Acento: #5cb85c (verde Minecraft)
+ *   - Texto: #e0e0e0
+ *   - Texto secundario: #a0a0a0
+ */
+
+/* ============ RESET Y BASE ============ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  user-select: none;
+}
+
+/* ============ CONTENEDOR PRINCIPAL ============ */
+.app-container {
+  display: grid;
+  grid-template-rows: 50px 1fr 40px;
+  height: 100vh;
+}
+
+/* ============ HEADER ============ */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background: linear-gradient(180deg, #2a2a2a 0%, #222222 100%);
+  border-bottom: 1px solid #3a3a3a;
+  -webkit-app-region: drag;
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-logo {
+  width: 30px;
+  height: 30px;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5cb85c;
+}
+
+.app-version {
+  font-size: 12px;
+  color: #888;
+  background: #1a1a1a;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: #e0e0e0;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+.icon-btn:hover {
+  background: #3a3a3a;
+}
+
+.close-btn:hover {
+  background: #d9534f;
+  color: white;
+}
+
+/* ============ MAIN GRID ============ */
+.app-main {
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+  gap: 1px;
+  background: #3a3a3a;
+  overflow: hidden;
+}
+
+/* ============ PANELES ============ */
+.panel {
+  background: #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #252525;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.panel-header h2 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5cb85c;
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* Scrollbar personalizado */
+.panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a;
+}
+
+/* ============ PANEL IZQUIERDO: PERFILES ============ */
+.profiles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.profile-item:hover {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
+}
+
+.profile-item.active {
+  background: #3d4f3d;
+  border-color: #5cb85c;
+}
+
+.profile-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #5cb85c, #4cae4c);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-uuid {
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-delete {
+  background: transparent;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.profile-delete:hover {
+  background: #4a2a2a;
+}
+
+/* Formulario de nuevo perfil */
+.new-profile-form {
+  background: #333;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+}
+
+.new-profile-form input {
+  width: 100%;
+  padding: 8px;
+  background: #1a1a1a;
+  border: 1px solid #4a4a4a;
+  color: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon-add {
+  background: #5cb85c;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.btn-icon-add:hover {
+  background: #4cae4c;
+}
+
+/* ============ PANEL CENTRAL ============ */
+.panel-center .panel-content {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  color: #a0a0a0;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.version-selector {
+  display: grid;
+  grid-template-columns: 1fr 130px;
+  gap: 8px;
+}
+
+.select-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: #1a1a1a;
+  border: 1px solid #4a4a4a;
+  color: #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.select-input:focus {
+  outline: none;
+  border-color: #5cb85c;
+}
+
+/* Mod Loader selector */
+.loader-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.loader-btn {
+  padding: 8px 4px;
+  background: #333;
+  border: 1px solid #4a4a4a;
+  color: #a0a0a0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.loader-btn:hover {
+  background: #3a3a3a;
+}
+
+.loader-btn.active {
+  background: #5cb85c;
+  color: white;
+  border-color: #5cb85c;
+}
+
+/* Botones generales */
+.btn {
+  padding: 10px 16px;
+  background: #4a4a4a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: #5a5a5a;
+}
+
+.btn-primary {
+  background: #5cb85c;
+}
+
+.btn-primary:hover {
+  background: #4cae4c;
+}
+
+.btn-secondary {
+  background: #4a4a4a;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Botón JUGAR - el más importante */
+.btn-play {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #5cb85c 0%, #4cae4c 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-top: 20px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(92, 184, 92, 0.3);
+}
+
+.btn-play:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(92, 184, 92, 0.5);
+}
+
+.btn-play:active {
+  transform: translateY(0);
+}
+
+.btn-play:disabled {
+  background: #555;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Fila JUGAR + DETENER */
+.play-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.play-row .btn-play {
+  margin-top: 0;
+}
+
+.btn-stop {
+  background: linear-gradient(135deg, #d9534f 0%, #c9302c 100%);
+  box-shadow: 0 4px 12px rgba(217, 83, 79, 0.3);
+  font-size: 14px;
+  padding: 16px 18px;
+  flex-shrink: 0;
+}
+
+.btn-stop:hover {
+  box-shadow: 0 6px 16px rgba(217, 83, 79, 0.5);
+}
+
+.play-icon {
+  font-size: 16px;
+}
+
+/* Progress bar */
+.progress-container {
+  background: #1a1a1a;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid #3a3a3a;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5cb85c, #4cae4c);
+  transition: width 0.3s ease;
+}
+
+.progress-status {
+  font-size: 11px;
+  color: #a0a0a0;
+  text-align: center;
+}
+
+/* Divisor */
+.divider {
+  border: none;
+  border-top: 1px solid #3a3a3a;
+  margin: 20px 0;
+}
+
+/* Hint del panel de mods */
+.mods-hint {
+  font-size: 11px;
+  color: #7a7a7a;
+  margin-top: 10px;
+  line-height: 1.5;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+
+/* Gestión de versiones instaladas */
+.versions-hint {
+  font-size: 11px;
+  color: #7a7a7a;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.installed-versions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.installed-version-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+}
+
+.version-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.version-item-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.version-item-size {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.badge-loader {
+  display: inline-block;
+  background: #4a90e2;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.btn-delete-version {
+  background: #d9534f;
+  padding: 6px 10px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.btn-delete-version:hover {
+  background: #c9302c;
+}
+
+/* Slider de memoria */
+.slider {
+  width: 100%;
+  height: 6px;
+  background: #333;
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 8px 0;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #5cb85c;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #2a2a2a;
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #5cb85c;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #2a2a2a;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #888;
+}
+
+/* Input groups */
+.input-group {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 4px;
+}
+
+.input-readonly {
+  padding: 8px 12px;
+  background: #1a1a1a;
+  border: 1px solid #4a4a4a;
+  color: #e0e0e0;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Consolas', monospace;
+}
+
+.textarea-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: #1a1a1a;
+  border: 1px solid #4a4a4a;
+  color: #e0e0e0;
+  border-radius: 4px;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.textarea-input:focus {
+  outline: none;
+  border-color: #5cb85c;
+}
+
+/* ============ PANEL DERECHO: MODS ============ */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #4a4a4a;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.mod-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #333;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.mod-item.disabled {
+  opacity: 0.5;
+}
+
+.mod-icon {
+  width: 24px;
+  height: 24px;
+  background: #5cb85c;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.mod-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mod-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.mod-size {
+  font-size: 10px;
+  color: #888;
+}
+
+.mod-toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: #555;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: none;
+  padding: 0;
+}
+
+.mod-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: left 0.2s;
+}
+
+.mod-toggle.enabled {
+  background: #5cb85c;
+}
+
+.mod-toggle.enabled::after {
+  left: 18px;
+}
+
+.mod-delete {
+  background: transparent;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 3px;
+}
+
+.mod-delete:hover {
+  background: #4a2a2a;
+}
+
+.downloads-section {
+  border-top: 1px solid #3a3a3a;
+  padding-top: 12px;
+}
+
+.downloads-section h3 {
+  font-size: 13px;
+  color: #5cb85c;
+  margin-bottom: 8px;
+}
+
+.downloads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.download-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  padding: 6px;
+  background: #333;
+  border-radius: 3px;
+}
+
+/* ============ FOOTER / NOTICIAS ============ */
+.app-footer {
+  background: #252525;
+  border-top: 1px solid #3a3a3a;
+  overflow: hidden;
+}
+
+.news-bar {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+.news-label {
+  font-size: 12px;
+  color: #5cb85c;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.news-ticker {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.news-text {
+  display: inline-block;
+  font-size: 13px;
+  color: #c0c0c0;
+  animation: ticker 30s linear infinite;
+  padding-left: 100%;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ============ ESTADOS VACÍOS ============ */
+.empty-state {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  padding: 20px;
+  font-style: italic;
+}
+
+.empty-state-small {
+  text-align: center;
+  color: #666;
+  font-size: 11px;
+  padding: 10px;
+  font-style: italic;
+}
+
+/* ============ MODALES ============ */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2a2a2a;
+  border-radius: 8px;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #3a3a3a;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.modal-header h2 {
+  font-size: 16px;
+  color: #5cb85c;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Logs */
+.logs-content {
+  flex: 1;
+  padding: 16px;
+  background: #1a1a1a;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  overflow-y: auto;
+  color: #c0c0c0;
+  border-radius: 0 0 8px 8px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.log-line {
+  margin-bottom: 2px;
+}
+
+.log-line.error {
+  color: #ff6b6b;
+}
+
+.log-line.success {
+  color: #5cb85c;
+}
+
+.log-line.info {
+  color: #5bc0de;
+}
+
+/* Toolbar del modal de logs */
+.logs-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.log-filter-btn {
+  background: #3a3a3a;
+  color: #ccc;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.log-filter-btn:hover {
+  background: #4a4a4a;
+}
+
+.log-filter-btn.active {
+  background: #5cb85c;
+  color: white;
+}
+
+.autoscroll-label {
+  font-size: 11px;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Filtrado de líneas de log */
+.logs-content.filter-error .log-line:not(.error) {
+  display: none;
+}
+
+.logs-content.filter-info .log-line:not(.info) {
+  display: none;
+}
+
+/* ============ NOTIFICACIONES ============ */
+.notification {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  padding: 12px 20px;
+  background: #2a2a2a;
+  border-left: 4px solid #5cb85c;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 2000;
+  animation: slideIn 0.3s ease;
+  max-width: 350px;
+}
+
+.notification.error {
+  border-left-color: #d9534f;
+}
+
+.notification.info {
+  border-left-color: #5bc0de;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ============ UTILIDADES ============ */
+.hidden { display: none !important; }
+
+/* ============ PANEL HEADER ACTIONS ============ */
+.panel-header-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* ============ IMPORT PREVIEW ============ */
+.import-preview {
+  margin-top: 16px;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  padding: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.preview-content {
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  color: #c0c0c0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+/* Botón de acción header */
+.btn-icon-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  background: #5cb85c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-icon-add:hover {
+  background: #4cae4c;
+  transform: scale(1.05);
+}
+
+.btn-icon-add:active {
+  transform: scale(0.95);
+}
+
+.btn-icon-add[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Animación para botón refresh cuando está cargando */
+.btn-icon-add.refreshing {
+  animation: spin 1s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

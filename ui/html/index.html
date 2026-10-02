@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+  <title>ADLauncher - Minecraft Launcher</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="icon" type="image/png" href="../../assets/icons/app-icon.png" />
+</head>
+<body>
+  <!-- Contenedor principal con layout de 3 columnas -->
+  <div class="app-container">
+    
+    <!-- ============ HEADER ============ -->
+    <header class="app-header">
+      <div class="header-left">
+        <img src="../../assets/icons/app-icon.png" alt="Logo" class="app-logo" />
+        <h1 class="app-title">ADLauncher</h1>
+        <span class="app-version">v1.0.1</span>
+      </div>
+      <div class="header-right">
+        <button id="btn-settings" class="icon-btn" title="Configuración">
+          <span>⚙️</span>
+        </button>
+        <button id="btn-minimize" class="icon-btn" title="Minimizar">−</button>
+        <button id="btn-close" class="icon-btn close-btn" title="Cerrar">×</button>
+      </div>
+    </header>
+
+    <!-- ============ CONTENIDO PRINCIPAL ============ -->
+    <main class="app-main">
+      
+      <!-- PANEL IZQUIERDO: Perfiles -->
+      <aside class="panel panel-left">
+        <div class="panel-header">
+          <h2>👤 Perfiles</h2>
+          <div class="panel-header-actions">
+            <button id="btn-new-profile" class="btn-icon-add" title="Crear perfil">+</button>
+            <button id="btn-import-profile" class="btn-icon-add" title="Importar perfiles" style="background: #4a90e2;">📥</button>
+            <button id="btn-export-profile" class="btn-icon-add" title="Exportar perfiles" style="background: #e2a04a;">📤</button>
+          </div>
+        </div>
+        <div class="panel-content">
+          <div id="profiles-list" class="profiles-list">
+            <p class="empty-state">No hay perfiles. Crea uno para empezar.</p>
+          </div>
+          
+          <!-- Formulario para nuevo perfil (oculto por defecto) -->
+          <div id="new-profile-form" class="new-profile-form" style="display: none;">
+            <input type="text" id="nickname-input" placeholder="Nickname (3-16 caracteres)" maxlength="16" />
+            <div class="form-buttons">
+              <button id="btn-save-profile" class="btn btn-primary">Guardar</button>
+              <button id="btn-cancel-profile" class="btn btn-secondary">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- PANEL CENTRAL: Versión y lanzamiento -->
+      <section class="panel panel-center">
+        <div class="panel-header">
+          <h2>🎮 Versión</h2>
+          <div class="panel-header-actions">
+            <button id="btn-manage-versions" class="btn-icon-add" title="Gestionar versiones instaladas" style="background: #d9534f;">🗂️</button>
+            <button id="btn-refresh-versions" class="btn-icon-add" title="Actualizar desde Mojang API" style="background: #4a90e2;">🔄</button>
+          </div>
+        </div>
+        <div class="panel-content">
+          
+          <!-- Selector de versión -->
+          <div class="form-group">
+            <label>Versión de Minecraft:</label>
+            <div class="version-selector">
+              <select id="version-select" class="select-input">
+                <option value="">-- Selecciona versión --</option>
+              </select>
+              <select id="version-type" class="select-input">
+                <option value="release">Releases</option>
+                <option value="snapshot">Snapshots</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Selector de mod loader -->
+          <div class="form-group">
+            <label>Mod Loader:</label>
+            <div class="loader-selector">
+              <button class="loader-btn active" data-loader="vanilla">Vanilla</button>
+              <button class="loader-btn" data-loader="forge">Forge</button>
+              <button class="loader-btn" data-loader="fabric">Fabric</button>
+              <button class="loader-btn" data-loader="neoforge">NeoForge</button>
+            </div>
+          </div>
+
+          <!-- Botón instalar -->
+          <div class="form-group">
+            <button id="btn-install" class="btn btn-secondary btn-full">
+              📥 Instalar / Descargar Versión
+            </button>
+          </div>
+
+          <!-- Barra de progreso -->
+          <div id="progress-container" class="progress-container" style="display: none;">
+            <div class="progress-info">
+              <span id="progress-percent">0%</span>
+              <span id="progress-speed">0 MB/s</span>
+            </div>
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <p id="progress-status" class="progress-status">Preparando...</p>
+          </div>
+
+          <hr class="divider" />
+
+          <!-- Configuración de RAM -->
+          <div class="form-group">
+            <label>Memoria RAM: <span id="memory-display">4</span> GB</label>
+            <input type="range" id="memory-slider" min="2" max="8" value="4" step="1" class="slider" />
+            <div class="slider-labels">
+              <span>2 GB</span>
+              <span id="mem-max-label">8 GB</span>
+            </div>
+          </div>
+
+          <!-- Configuración de Java -->
+          <div class="form-group">
+            <label>Ruta de Java:</label>
+            <div class="input-group">
+              <input type="text" id="java-path" placeholder="Auto-detectar" readonly class="input-readonly" />
+              <button id="btn-select-java" class="btn btn-secondary">📁</button>
+              <button id="btn-detect-java" class="btn btn-secondary">🔍</button>
+            </div>
+          </div>
+
+          <!-- Argumentos JVM -->
+          <div class="form-group">
+            <label>Argumentos JVM:</label>
+            <textarea id="jvm-args" class="textarea-input" rows="3" 
+              placeholder="-XX:+UseG1GC -XX:+UnlockExperimentalVMOptions"></textarea>
+          </div>
+
+          <!-- Botones de juego -->
+          <div class="play-row">
+            <button id="btn-play" class="btn btn-play">
+              <span class="play-icon">▶</span> JUGAR
+            </button>
+            <button id="btn-stop-game" class="btn btn-play btn-stop" style="display: none;" title="Cerrar el juego">
+              <span class="play-icon">⏹</span> DETENER
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL DERECHO: Mods y descargas -->
+      <aside class="panel panel-right">
+        <div class="panel-header">
+          <h2>🧩 Mods</h2>
+          <button id="btn-add-mod" class="btn-icon-add" title="Añadir mod">+</button>
+        </div>
+        <div class="panel-content">
+          
+          <div class="form-group">
+            <label>Versión actual:</label>
+            <span id="current-version" class="badge">-</span>
+          </div>
+
+          <div id="mods-list" class="mods-list">
+            <p class="empty-state">Selecciona una versión para ver sus mods.</p>
+          </div>
+
+          <p class="mods-hint">
+            ℹ️ Los mods solo los cargan Fabric, Forge o NeoForge. Instala el
+            loader para tu versión (elígelo y pulsa Instalar) y añade aquí tus .jar.
+          </p>
+
+          <!-- Descargas activas -->
+          <div class="downloads-section">
+            <h3>📥 Descargas</h3>
+            <div id="downloads-list" class="downloads-list">
+              <p class="empty-state-small">No hay descargas activas.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- ============ BARRA INFERIOR: Noticias ============ -->
+    <footer class="app-footer">
+      <div class="news-bar">
+        <span class="news-label">📰 Noticias:</span>
+        <div class="news-ticker">
+          <span id="news-text" class="news-text">
+            🎉 Bienvenido a ADLauncher 1.0.0 - Disfruta de tus mods favoritos
+          </span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ============ MODAL DE LOGS ============ -->
+    <div id="logs-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>📋 Log de la Sesión</h2>
+          <div class="logs-toolbar">
+            <button class="log-filter-btn active" data-filter="all">Todos</button>
+            <button class="log-filter-btn" data-filter="error">⚠ Errores</button>
+            <button class="log-filter-btn" data-filter="info">ℹ Info</button>
+            <button id="btn-clear-logs" class="log-filter-btn" title="Limpiar log">🗑</button>
+            <label class="autoscroll-label" title="Desplazamiento automático">
+              <input type="checkbox" id="chk-autoscroll" checked /> Auto
+            </label>
+            <button id="btn-close-logs" class="icon-btn">×</button>
+          </div>
+        </div>
+        <div id="logs-content" class="logs-content"></div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL DE CONFIGURACIÓN ============ -->
+    <div id="settings-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>⚙️ Configuración</h2>
+          <button id="btn-close-settings" class="icon-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Directorio de Minecraft:</label>
+            <div class="input-group">
+              <input type="text" id="minecraft-dir" readonly class="input-readonly" />
+              <button id="btn-select-dir" class="btn btn-secondary">📁 Seleccionar</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="close-on-launch" />
+              Cerrar launcher al iniciar el juego
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="show-logs" checked />
+              Mostrar ventana de logs al lanzar
+            </label>
+          </div>
+          <button id="btn-save-settings" class="btn btn-primary">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+    <!-- ============ MODAL DE GESTIÓN DE VERSIONES ============ -->
+    <div id="versions-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>🗂️ Versiones instaladas</h2>
+          <button id="btn-close-versions" class="icon-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="versions-hint">
+            El tamaño incluye el JAR, natives y metadata de cada versión.
+            Las librerías y assets son compartidos entre versiones y no se borran.
+          </p>
+          <div id="installed-versions-list" class="installed-versions-list">
+            <p class="empty-state">Cargando...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL DE IMPORTACIÓN DE PERFILES ============ -->
+    <div id="import-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>📥 Importar Perfiles</h2>
+          <button id="btn-close-import" class="icon-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom: 16px; color: #a0a0a0; font-size: 13px;">
+            Selecciona un archivo JSON de perfiles exportado previamente.
+          </p>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="import-overwrite" />
+              Sobrescribir perfiles existentes con el mismo nickname
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="import-replace-all" />
+              ⚠️ Reemplazar TODOS los perfiles actuales
+            </label>
+          </div>
+
+          <div id="import-preview" class="import-preview" style="display: none;">
+            <h3 style="color: #5cb85c; margin-bottom: 8px;">Vista previa:</h3>
+            <pre id="import-preview-content" class="preview-content"></pre>
+          </div>
+
+          <button id="btn-do-import" class="btn btn-primary" style="margin-top: 12px;">
+            📥 Seleccionar archivo e importar
+          </button>
+        </div>
+      </div>
+    </div>
+
+  <script src="../js/renderer.js"></script>
+</body>
+</html>
