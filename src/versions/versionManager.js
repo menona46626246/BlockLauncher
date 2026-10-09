@@ -17,6 +17,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const https = require('https');
+const { getConfigDir, getDefaultMinecraftDir } = require('../ui/appPaths');
 
 // Importación de adlauncher-core (la dependencia principal, opcional)
 // Si está disponible se usa, si no, nuestro ManualLauncher hace el trabajo
@@ -56,7 +57,7 @@ class VersionManager {
     this.activeChild = null; // proceso del juego en ejecución
 
     // Configuración de caché de versiones remotas
-    this.cacheFile = path.join(__dirname, '..', '..', 'config', 'versions_cache.json');
+    this.cacheFile = path.join(getConfigDir(), 'versions_cache.json');
     this.cacheTTL = 6 * 60 * 60 * 1000; // 6 horas en milisegundos
     this.remoteVersions = null; // Lista remota cacheada en memoria
 
@@ -923,7 +924,7 @@ class VersionManager {
   async _getMinecraftRoot() {
     const result = await this.configManager.getConfig();
     const dir = result && result.config ? result.config.minecraftDirectory : null;
-    return dir || path.join(__dirname, '..', '..', '.minecraft');
+    return dir || getDefaultMinecraftDir();
   }
 
   /**
@@ -982,7 +983,7 @@ class VersionManager {
    */
   async _loadInstalledVersions() {
     try {
-      const installedFile = path.join(__dirname, '..', '..', 'config', 'installed_versions.json');
+      const installedFile = path.join(getConfigDir(), 'installed_versions.json');
       const exists = await this._fileExists(installedFile);
 
       if (exists) {
@@ -1030,6 +1031,7 @@ class VersionManager {
         cachedAt: new Date().toISOString(),
         ttl: this.cacheTTL
       };
+      await fs.mkdir(path.dirname(this.cacheFile), { recursive: true });
       await fs.writeFile(this.cacheFile, JSON.stringify(data, null, 2), 'utf-8');
       console.log(`[Versions] Caché guardada con ${versions.length} versiones`);
     } catch (error) {
@@ -1072,11 +1074,12 @@ class VersionManager {
    */
   async _saveInstalledVersions() {
     try {
-      const installedFile = path.join(__dirname, '..', '..', 'config', 'installed_versions.json');
+      const installedFile = path.join(getConfigDir(), 'installed_versions.json');
       const data = {
         versions: this.installedVersions,
         lastUpdated: new Date().toISOString()
       };
+      await fs.mkdir(path.dirname(installedFile), { recursive: true });
       await fs.writeFile(installedFile, JSON.stringify(data, null, 2), 'utf-8');
     } catch (error) {
       console.error('[Versions] Error al guardar versiones instaladas:', error);

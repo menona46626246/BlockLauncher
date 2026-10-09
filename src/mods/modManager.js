@@ -11,6 +11,7 @@
 
 const fs = require('fs').promises;
 const path = require('path');
+const { getConfigDir, getDefaultMinecraftDir } = require('../ui/appPaths');
 
 class ModManager {
   /**
@@ -19,7 +20,7 @@ class ModManager {
    */
   constructor(configManager) {
     this.configManager = configManager;
-    this.modsStateFile = path.join(__dirname, '..', '..', 'config', 'mods_state.json');
+    this.modsStateFile = path.join(getConfigDir(), 'mods_state.json');
     this.modsState = {}; // { versionId: [mod1, mod2, ...] }
   }
 
@@ -330,7 +331,7 @@ class ModManager {
   async _getModsDirectory(versionId) {
     const result = await this.configManager.getConfig();
     const mcRoot = (result && result.config ? result.config.minecraftDirectory : null) ||
-      path.join(__dirname, '..', '..', '.minecraft');
+      getDefaultMinecraftDir();
     return path.join(mcRoot, 'mods');
   }
 
@@ -359,6 +360,7 @@ class ModManager {
    */
   async _saveState() {
     try {
+      await fs.mkdir(path.dirname(this.modsStateFile), { recursive: true });
       await fs.writeFile(
         this.modsStateFile,
         JSON.stringify(this.modsState, null, 2),

@@ -11,10 +11,11 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { execSync } = require('child_process');
+const { getConfigDir, getDefaultMinecraftDir } = require('./appPaths');
 
 class ConfigManager {
   constructor() {
-    this.configFile = path.join(__dirname, '..', '..', 'config', 'launcher.json');
+    this.configFile = path.join(getConfigDir(), 'launcher.json');
     this.defaultConfig = {
       // Memoria RAM asignada (en GB)
       memory: 4,
@@ -55,7 +56,7 @@ class ConfigManager {
       if (!exists) {
         console.log('[Config] Archivo no existe, creando con valores por defecto...');
         // Establecer el directorio de Minecraft por defecto
-        this.config.minecraftDirectory = path.join(__dirname, '..', '..', '.minecraft');
+        this.config.minecraftDirectory = getDefaultMinecraftDir();
         // Intentar auto-detectar Java
         const javaResult = await this.detectJava();
         if (javaResult.success) {

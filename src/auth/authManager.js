@@ -14,6 +14,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { getConfigDir } = require('../ui/appPaths');
 
 class AuthManager {
   /**
@@ -22,7 +23,7 @@ class AuthManager {
    */
   constructor(configManager) {
     this.configManager = configManager;
-    this.profilesFile = path.join(__dirname, '..', '..', 'config', 'profiles.json');
+    this.profilesFile = path.join(getConfigDir(), 'profiles.json');
     this.profiles = [];
     this.activeProfileId = null;
 

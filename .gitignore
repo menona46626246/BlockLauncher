@@ -20,9 +20,8 @@ desktop.ini
 *.swp
 *~
 
-# Builds
+# Builds (salida de electron-builder; build/ contiene el icono fuente y SÍ se commitea)
 dist/
-build/
 out/
 *.exe
 *.dmg
