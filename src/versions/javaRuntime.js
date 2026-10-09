@@ -25,7 +25,7 @@ const ADOPTIUM_BASE = 'https://api.adoptium.net/v3/binary/latest';
 
 class JavaRuntime {
   constructor() {
-    this.userAgent = 'ADLauncher/1.1.0';
+    this.userAgent = 'BlockLauncher/1.1.0';
     this.downloadTimeout = 300000; // 5 min: un JRE pesa ~50 MB
     // Caché de versiones verificadas: javaPath -> major (evita re-ejecutar
     // `java -version`, que puede tardar varios segundos)

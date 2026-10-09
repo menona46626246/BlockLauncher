@@ -29,7 +29,7 @@ class AuthManager {
     // Versión del esquema de export para compatibilidad futura
     this.EXPORT_SCHEMA_VERSION = '1.0.0';
     // Aplicación que generó el archivo
-    this.EXPORT_APP = 'ADLauncher';
+    this.EXPORT_APP = 'BlockLauncher';
   }
 
   /**

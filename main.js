@@ -52,7 +52,7 @@ function createMainWindow() {
       height: 800,
       minWidth: 1024,
       minHeight: 700,
-      title: 'ADLauncher - Minecraft Launcher',
+      title: 'BlockLauncher - Minecraft Launcher',
       icon: path.join(__dirname, 'assets', 'icons', 'app-icon.png'),
       backgroundColor: '#1a1a1a',
       webPreferences: {
@@ -179,7 +179,7 @@ function setupIpcHandlers() {
         if (!targetPath) {
           const result = await dialog.showSaveDialog(mainWindow, {
             title: 'Exportar perfiles',
-            defaultPath: `adlauncher-profiles-${Date.now()}.json`,
+            defaultPath: `blocklauncher-profiles-${Date.now()}.json`,
             filters: [
               { name: 'Archivos JSON', extensions: ['json'] },
               { name: 'Todos los archivos', extensions: ['*'] }

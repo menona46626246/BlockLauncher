@@ -29,12 +29,11 @@ const state = {
   logFilter: 'all',
   autoScroll: true,
   newsItems: [
-    '🎉 Bienvenido a ADLauncher 1.0.0 - Tu launcher favorito ya está aquí',
-    '🧩 Soporte completo para Forge, Fabric y OptiFine',
+    '🎉 Bienvenido a BlockLauncher - Tu launcher favorito ya está aquí',
+    '🧩 Fabric, Forge y NeoForge: instala el loader que prefieras',
     '📦 Gestor de mods integrado con activación/desactivación',
     '🔒 Autenticación offline - Sin cuenta Mojang requerida',
-    '⚡ Rendimiento optimizado con gestión de memoria 2-8 GB',
-    '🎮 Compatible con todas las versiones desde 1.8 hasta 1.21',
+    '☕ Java compatible descargado automáticamente si hace falta',
     '💾 Tus perfiles se guardan localmente con UUID persistente',
     '🌙 Tema oscuro para sesiones nocturnas'
   ]

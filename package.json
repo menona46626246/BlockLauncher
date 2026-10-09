@@ -1,7 +1,7 @@
 {
-  "name": "adlauncher-minecraft",
+  "name": "blocklauncher-minecraft",
   "version": "1.1.0",
-  "description": "Launcher de Minecraft offline con soporte para Forge, Fabric, OptiFine y gestor de mods",
+  "description": "Launcher de Minecraft offline con soporte para Fabric, Forge y NeoForge, gestor de mods y Java automático",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -13,11 +13,12 @@
   "keywords": [
     "minecraft",
     "launcher",
-    "adlauncher",
+    "blocklauncher",
     "offline",
     "mods",
+    "fabric",
     "forge",
-    "fabric"
+    "neoforge"
   ],
   "author": "Tu Nombre",
   "license": "MIT",

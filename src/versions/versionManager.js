@@ -10,7 +10,8 @@
  * - Lanzamiento del juego con la versión seleccionada
  * - Seguimiento de progreso de descarga
  *
- * Usa la librería adlauncher-core como motor principal.
+ * El motor principal es el ManualLauncher nativo; adlauncher-core
+ * (opcional) solo se usa para instalar versiones vanilla.
  */
 
 const fs = require('fs').promises;

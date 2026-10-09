@@ -49,10 +49,10 @@ const INSTALLER_LOADERS = {
 
 class ManualLauncher {
   constructor() {
-    this.userAgent = 'ADLauncher/1.1.0';
+    this.userAgent = 'BlockLauncher/1.1.0';
     this.downloadTimeout = 60000; // 60 segundos por archivo
     this.maxConcurrentDownloads = 4; // descargas paralelas
-    this.launcherName = 'ADLauncher';
+    this.launcherName = 'BlockLauncher';
     this.launcherVersion = '1.1.0';
     this.javaRuntime = new JavaRuntime();
   }

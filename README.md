@@ -1,4 +1,4 @@
-# 🎮 ADLauncher - Minecraft Launcher
+# 🎮 BlockLauncher - Minecraft Launcher
 
 Launcher de Minecraft offline construido con **Node.js** y **Electron**. Motor de instalación y lanzamiento 100% nativo (sin `adlauncher-core` obligatorio): descarga, instala y ejecuta Minecraft directamente desde los servidores oficiales de Mojang, con soporte para **Fabric, Forge y NeoForge**.
 
@@ -164,7 +164,7 @@ Los perfiles se guardan en `./config/profiles.json`:
 ```json
 {
   "schemaVersion": "1.0.0",
-  "app": "ADLauncher",
+  "app": "BlockLauncher",
   "exportType": "all",
   "exportedAt": "2026-01-20T16:00:00.000Z",
   "profiles": [...],
