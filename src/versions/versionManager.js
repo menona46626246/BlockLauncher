@@ -123,21 +123,8 @@ class VersionManager {
         modLoaders: this._getModLoadersForVersion(v.id)
       }));
 
-      // Incluir versiones locales compuestas (p.ej. "26.3-fabric") que no
-      // aparecen en la lista de Mojang
-      const remoteIds = new Set(versionsWithStatus.map(v => v.id));
-      for (const localId of this.installedVersions) {
-        if (!remoteIds.has(localId)) {
-          versionsWithStatus.push({
-            id: localId,
-            type: 'release',
-            releaseDate: null,
-            installed: true,
-            local: true,
-            modLoaders: ['fabric']
-          });
-        }
-      }
+      // Incluir versiones locales compuestas (Fabric/Forge/NeoForge)
+      this._appendLocalVersions(versionsWithStatus);
 
       this.versions = versionsWithStatus;
 
@@ -160,6 +147,9 @@ class VersionManager {
         modLoaders: this._getModLoadersForVersion(v.id)
       }));
 
+      // No perder las compuestas aunque no haya conexión
+      this._appendLocalVersions(versionsWithStatus);
+
       return {
         success: false,
         error: error.message,
@@ -167,6 +157,27 @@ class VersionManager {
         installedCount: this.installedVersions.length,
         totalCount: versionsWithStatus.length
       };
+    }
+  }
+
+  /**
+   * Añade a una lista de versiones las locales compuestas (creadas por los
+   * installers de Fabric/Forge/NeoForge) que no aparecen en la lista de Mojang.
+   * @private
+   */
+  _appendLocalVersions(list) {
+    const existingIds = new Set(list.map(v => v.id));
+    for (const localId of this.installedVersions) {
+      if (!existingIds.has(localId)) {
+        list.push({
+          id: localId,
+          type: 'release',
+          releaseDate: null,
+          installed: true,
+          local: true,
+          modLoaders: []
+        });
+      }
     }
   }
 
@@ -679,7 +690,8 @@ class VersionManager {
         // Guardar referencia del proceso para poder detenerlo desde la UI
         this.activeChild = result.child || null;
         if (this.activeChild) {
-          this.activeChild.once('exit', () => {
+          // 'close' siempre se emite (también si el spawn falló)
+          this.activeChild.once('close', () => {
             this.activeChild = null;
           });
         }
@@ -848,6 +860,11 @@ class VersionManager {
     try {
       if (!versionId || typeof versionId !== 'string') {
         throw new Error('Se requiere un ID de versión');
+      }
+
+      // No borrar archivos que el juego podría estar usando
+      if (this.activeChild) {
+        throw new Error('Detén el juego antes de eliminar versiones');
       }
 
       const root = await this._getMinecraftRoot();

@@ -71,6 +71,12 @@ function createMainWindow() {
     // Cargar el HTML principal
     mainWindow.loadFile(path.join(__dirname, 'ui', 'html', 'index.html'));
 
+    // Endurecimiento: bloquear navegación a contenido externo y popups
+    mainWindow.webContents.on('will-navigate', (event) => {
+      event.preventDefault();
+    });
+    mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+
     // Evento cuando la ventana está lista para mostrarse
     mainWindow.once('ready-to-show', () => {
       mainWindow.show();
@@ -330,7 +336,12 @@ function setupIpcHandlers() {
     // Guardar configuración
     ipcMain.handle('config:set', async (event, newConfig) => {
       try {
-        return await configManager.setConfig(newConfig);
+        const result = await configManager.setConfig(newConfig);
+        // Si cambió el directorio de Minecraft, resincronizar versiones
+        if (result.success) {
+          await versionManager._syncInstalledWithDisk().catch(() => {});
+        }
+        return result;
       } catch (error) {
         console.error('[IPC config:set]', error);
         return { success: false, error: error.message };

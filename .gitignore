@@ -1,18 +1,13 @@
 # Dependencias
 node_modules/
-package-lock.json
-yarn.lock
 
-# Archivos generados por el launcher
+# Archivos generados por el launcher (juego, saves, JDKs descargados)
 .minecraft/
+
+# Datos y caches generadas en tiempo de ejecución
+config/
 logs/
 *.log
-
-# Configuración local
-config/profiles.json
-config/launcher.json
-config/installed_versions.json
-config/mods_state.json
 
 # Archivos del sistema
 .DS_Store

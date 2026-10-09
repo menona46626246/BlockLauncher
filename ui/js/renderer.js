@@ -241,15 +241,17 @@ async function doImport() {
 async function loadVersions(options = {}) {
   try {
     const result = await invoke('versions:list', options);
-    if (result.success) {
-      state.versions = result.versions || [];
+    // Usar la lista aunque venga marcada como error (p.ej. sin conexión:
+    // el main devuelve el fallback + versiones locales instaladas)
+    if (result.versions) {
+      state.versions = result.versions;
       state.installedVersions = result.versions.filter(v => v.installed).map(v => v.id);
       renderVersions();
-      return result;
-    } else {
-      notify('Error al cargar versiones: ' + result.error, 'error');
-      return result;
     }
+    if (!result.success) {
+      notify('Error al cargar versiones: ' + (result.error || 'desconocido'), 'error');
+    }
+    return result;
   } catch (err) {
     console.error('[Renderer] Error:', err);
     return { success: false, error: err.message };
@@ -295,7 +297,8 @@ function renderVersions() {
   select.innerHTML = '<option value="">-- Selecciona versión --</option>' +
     filtered.map(v => {
       const installedTag = v.installed ? ' ✓' : '';
-      return `<option value="${v.id}">${v.id}${installedTag}</option>`;
+      const id = escapeHtml(v.id);
+      return `<option value="${id}">${id}${installedTag}</option>`;
     }).join('');
 
   // Restaurar selección si existe
@@ -329,7 +332,8 @@ async function installVersion() {
 
   state.isInstalling = false;
   $('btn-install').disabled = false;
-  $('btn-play').disabled = false;
+  // No re-habilitar JUGAR si el juego sigue corriendo
+  $('btn-play').disabled = state.isGameRunning;
 
   if (result.success) {
     notify(result.message, 'success');
@@ -345,6 +349,11 @@ async function installVersion() {
     }
   } else {
     notify('Error: ' + result.error, 'error');
+    // Asegurar que la barra de progreso desaparezca aunque no llegara
+    // el evento de progreso de error
+    setTimeout(() => {
+      $('progress-container').style.display = 'none';
+    }, 3000);
   }
 }
 
@@ -699,6 +708,8 @@ async function saveSettings() {
     state.config = result.config;
     notify('Configuración guardada', 'success');
     $('settings-modal').style.display = 'none';
+    // El directorio de Minecraft pudo cambiar: refrescar la lista de versiones
+    await loadVersions();
   } else {
     notify('Error: ' + result.error, 'error');
   }
@@ -843,7 +854,7 @@ function buildNewsItems() {
     items.push(`🧪 Último snapshot disponible: ${latestSnapshot.id}`);
   }
 
-  items.push('🧩 Añade soporte de mods instalando Fabric para tu versión favorita');
+  items.push('🧩 Fabric, Forge y NeoForge: instala el loader que prefieras y añade mods');
   items.push('🔒 Autenticación offline - Sin cuenta Mojang requerida');
 
   if (items.length > 0) {

@@ -49,11 +49,11 @@ const INSTALLER_LOADERS = {
 
 class ManualLauncher {
   constructor() {
-    this.userAgent = 'ADLauncher/1.0.1';
+    this.userAgent = 'ADLauncher/1.1.0';
     this.downloadTimeout = 60000; // 60 segundos por archivo
     this.maxConcurrentDownloads = 4; // descargas paralelas
     this.launcherName = 'ADLauncher';
-    this.launcherVersion = '1.0.1';
+    this.launcherVersion = '1.1.0';
     this.javaRuntime = new JavaRuntime();
   }
 
@@ -335,9 +335,13 @@ class ManualLauncher {
 
       child.on('error', (err) => {
         log(`ERROR al iniciar: ${err.message}`);
+        // Asegurar que la UI detecte el fin aunque el proceso nunca llegó a existir
+        log(`Proceso terminado (spawn error: ${err.message})`);
       });
 
-      child.on('exit', (code, signal) => {
+      // 'close' siempre se emite (también tras un error de spawn);
+      // 'exit' NO se emite si el proceso no llegó a arrancar
+      child.on('close', (code, signal) => {
         log(`Proceso terminado (code=${code}, signal=${signal})`);
       });
 
@@ -564,9 +568,9 @@ class ManualLauncher {
       throw new Error(`El installer terminó pero no se encontró la versión ${expectedId}`);
     }
 
-    // 7. Limpiar installer y su log
+    // 7. Limpiar installer y su log (el installer lo escribe en su CWD)
     await fsp.unlink(installerPath).catch(() => {});
-    await fsp.unlink(`${installerPath}.log`).catch(() => {});
+    await fsp.unlink(path.join(root, path.basename(installerPath) + '.log')).catch(() => {});
 
     console.log(`[ManualLauncher] ${meta.name} ${best} instalado como ${expectedId}`);
     return expectedId;
