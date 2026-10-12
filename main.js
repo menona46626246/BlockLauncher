@@ -30,6 +30,7 @@ const AuthManager = require('./src/auth/authManager');
 const VersionManager = require('./src/versions/versionManager');
 const ModManager = require('./src/mods/modManager');
 const ConfigManager = require('./src/ui/configManager');
+const ModrinthApi = require('./src/mods/modrinthApi');
 
 // Variable global para la ventana principal
 let mainWindow = null;
@@ -39,6 +40,7 @@ let authManager = null;
 let versionManager = null;
 let modManager = null;
 let configManager = null;
+const modrinth = new ModrinthApi();
 
 /**
  * Función que crea la ventana principal del launcher
@@ -470,6 +472,29 @@ function setupIpcHandlers() {
         return { success: true, path: result.filePaths[0] };
       } catch (error) {
         console.error('[IPC mods:select-file]', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    // ========== HANDLERS DE MODRINTH (buscar e instalar mods) ==========
+
+    // Buscar mods en Modrinth
+    ipcMain.handle('modrinth:search', async (event, options = {}) => {
+      try {
+        return await modrinth.search(options);
+      } catch (error) {
+        console.error('[IPC modrinth:search]', error);
+        return { success: false, error: error.message, hits: [] };
+      }
+    });
+
+    // Instalar un mod de Modrinth en la carpeta de mods
+    ipcMain.handle('modrinth:install', async (event, options = {}) => {
+      try {
+        const modsDir = await modManager.getModsDirectory();
+        return await modrinth.install({ ...options, modsDir });
+      } catch (error) {
+        console.error('[IPC modrinth:install]', error);
         return { success: false, error: error.message };
       }
     });

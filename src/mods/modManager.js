@@ -324,6 +324,13 @@ class ModManager {
   }
 
   /**
+   * Directorio de mods compartido (público para otros módulos, p.ej. Modrinth)
+   */
+  async getModsDirectory() {
+    return this._getModsDirectory(null);
+  }
+
+  /**
    * Obtiene la ruta del directorio de mods.
    * Carpeta estándar: el juego (Fabric/Forge) carga los mods de <gameDir>/mods.
    * @private

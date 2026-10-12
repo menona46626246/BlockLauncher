@@ -126,7 +126,7 @@ class VersionManager {
       }));
 
       // Incluir versiones locales compuestas (Fabric/Forge/NeoForge)
-      this._appendLocalVersions(versionsWithStatus);
+      await this._appendLocalVersions(versionsWithStatus);
 
       this.versions = versionsWithStatus;
 
@@ -150,7 +150,7 @@ class VersionManager {
       }));
 
       // No perder las compuestas aunque no haya conexión
-      this._appendLocalVersions(versionsWithStatus);
+      await this._appendLocalVersions(versionsWithStatus);
 
       return {
         success: false,
@@ -165,21 +165,40 @@ class VersionManager {
   /**
    * Añade a una lista de versiones las locales compuestas (creadas por los
    * installers de Fabric/Forge/NeoForge) que no aparecen en la lista de Mojang.
+   * Incluye `parent` (la versión vanilla de la que heredan) para que la UI
+   * sepa contra qué versión/loader filtrar la búsqueda de mods.
    * @private
    */
-  _appendLocalVersions(list) {
+  async _appendLocalVersions(list) {
     const existingIds = new Set(list.map(v => v.id));
-    for (const localId of this.installedVersions) {
-      if (!existingIds.has(localId)) {
-        list.push({
-          id: localId,
-          type: 'release',
-          releaseDate: null,
-          installed: true,
-          local: true,
-          modLoaders: []
-        });
+    const locals = this.installedVersions.filter(id => !existingIds.has(id));
+    if (locals.length === 0) return;
+
+    let root = null;
+    try {
+      root = await this._getMinecraftRoot();
+    } catch { root = null; }
+
+    for (const localId of locals) {
+      // Resolver la versión padre leyendo el json de la compuesta
+      let parent = null;
+      if (root) {
+        try {
+          const jsonPath = path.join(root, 'versions', localId, `${localId}.json`);
+          const json = JSON.parse(await fs.readFile(jsonPath, 'utf-8'));
+          parent = json.inheritsFrom || null;
+        } catch { /* sin json legible: sin parent */ }
       }
+
+      list.push({
+        id: localId,
+        type: 'release',
+        releaseDate: null,
+        installed: true,
+        local: true,
+        parent,
+        modLoaders: []
+      });
     }
   }
 

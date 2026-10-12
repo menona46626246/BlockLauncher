@@ -549,6 +549,123 @@ html, body {
   background: #c9302c;
 }
 
+/* ============ BÚSQUEDA DE MODS (MODRINTH) ============ */
+
+.modal-content-lg {
+  width: 820px;
+}
+
+.browse-context {
+  font-size: 12px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #a0a0a0;
+}
+
+.browse-context.ok {
+  color: #5cb85c;
+  border-color: #3a5a3a;
+}
+
+.browse-context.warn {
+  color: #e2a04a;
+  border-color: #5a4a2a;
+}
+
+.browse-search-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.browse-search-input {
+  flex: 1;
+  padding: 10px 12px;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 13px;
+  outline: none;
+}
+
+.browse-search-input:focus {
+  border-color: #5cb85c;
+}
+
+.browse-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.browse-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+}
+
+.browse-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: #2a2a2a;
+  object-fit: cover;
+}
+
+.browse-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.browse-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.browse-meta {
+  font-size: 11px;
+  color: #888;
+  margin: 2px 0 4px 0;
+}
+
+.browse-desc {
+  font-size: 11px;
+  color: #7a7a7a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.browse-install {
+  background: #5cb85c;
+  padding: 8px 14px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.browse-install:hover {
+  background: #4cae4c;
+}
+
+.browse-install:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
 /* Slider de memoria */
 .slider {
   width: 100%;

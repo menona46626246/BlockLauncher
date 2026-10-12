@@ -24,7 +24,7 @@ test('composites: detección por id', () => {
 });
 
 // ============ _appendLocalVersions ============
-test('listado: añade instaladas no presentes en la lista remota', () => {
+test('listado: añade instaladas no presentes en la lista remota', async () => {
   const vm = new VersionManager(stub);
   vm.installedVersions = ['26.3', '26.3-fabric', '26.4-snapshot-2'];
 
@@ -32,7 +32,7 @@ test('listado: añade instaladas no presentes en la lista remota', () => {
     { id: '26.3', type: 'release' },
     { id: '26.4-snapshot-2', type: 'snapshot' }
   ];
-  vm._appendLocalVersions(list);
+  await vm._appendLocalVersions(list);
 
   const ids = list.map(v => v.id);
   assert.ok(ids.includes('26.3-fabric'), 'la compuesta debe añadirse');

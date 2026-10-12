@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' https://cdn.modrinth.com data:;" />
   <title>BlockLauncher - Minecraft Launcher</title>
   <link rel="stylesheet" href="../css/styles.css" />
   <link rel="icon" type="image/png" href="../../assets/icons/app-icon.png" />
@@ -156,7 +156,10 @@
       <aside class="panel panel-right">
         <div class="panel-header">
           <h2>🧩 Mods</h2>
-          <button id="btn-add-mod" class="btn-icon-add" title="Añadir mod">+</button>
+          <div class="panel-header-actions">
+            <button id="btn-browse-mods" class="btn-icon-add" title="Buscar mods en Modrinth" style="background: #5bc0de;">🔍</button>
+            <button id="btn-add-mod" class="btn-icon-add" title="Añadir mod desde archivo">+</button>
+          </div>
         </div>
         <div class="panel-content">
           
@@ -170,8 +173,8 @@
           </div>
 
           <p class="mods-hint">
-            ℹ️ Los mods solo los cargan Fabric, Forge o NeoForge. Instala el
-            loader para tu versión (elígelo y pulsa Instalar) y añade aquí tus .jar.
+            ℹ️ Los mods solo los cargan Fabric, Forge o NeoForge. Búscalos con 🔍,
+            añádelos desde un archivo con +, o instala el loader con el botón Instalar.
           </p>
 
           <!-- Descargas activas -->
@@ -250,6 +253,27 @@
     </div>
 
   </div>
+
+    <!-- ============ MODAL DE BÚSQUEDA DE MODS (Modrinth) ============ -->
+    <div id="browse-modal" class="modal" style="display: none;">
+      <div class="modal-content modal-content-lg">
+        <div class="modal-header">
+          <h2>🔍 Buscar mods en Modrinth</h2>
+          <button id="btn-close-browse" class="icon-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="browse-context" class="browse-context"></div>
+          <div class="browse-search-row">
+            <input type="text" id="browse-search-input" class="browse-search-input"
+                   placeholder="Buscar mods... (ej: sodium, jei, shaders)" maxlength="80" />
+            <button id="btn-browse-search" class="btn btn-primary">Buscar</button>
+          </div>
+          <div id="browse-results" class="browse-results">
+            <p class="empty-state">Escribe el nombre de un mod y pulsa Buscar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- ============ MODAL DE GESTIÓN DE VERSIONES ============ -->
     <div id="versions-modal" class="modal" style="display: none;">

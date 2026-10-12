@@ -461,6 +461,157 @@ async function addMod() {
   }
 }
 
+// ============= BÚSQUEDA DE MODS (MODRINTH) =============
+
+/**
+ * Resuelve contra qué versión/loader se buscan e instalan mods:
+ * - Versión compuesta seleccionada → su parent + su loader
+ * - Versión vanilla + loader elegido en los botones → ese loader
+ * - Vanilla puro → sin loader (la UI avisará)
+ */
+function resolveModTargets() {
+  const version = state.versions.find(v => v.id === state.selectedVersion);
+  if (!version) return { loader: null, mcVersion: null };
+
+  if (isCompositeVersion(version.id)) {
+    const parent = version.parent ||
+      version.id.replace(/-fabric$/, '').split('-forge-')[0];
+    let loader = 'fabric';
+    if (version.id.startsWith('neoforge')) loader = 'neoforge';
+    else if (version.id.includes('-forge')) loader = 'forge';
+    return { loader, mcVersion: parent };
+  }
+
+  const loader = state.selectedModLoader !== 'vanilla' ? state.selectedModLoader : null;
+  return { loader, mcVersion: version.id };
+}
+
+/**
+ * Actualiza la línea de contexto del modal (para qué versión/loader busca)
+ * y devuelve false si no se puede instalar nada
+ */
+function updateBrowseContext() {
+  const ctx = $('browse-context');
+  const { loader, mcVersion } = resolveModTargets();
+
+  if (!mcVersion) {
+    ctx.className = 'browse-context warn';
+    ctx.textContent = '⚠️ Selecciona una versión para instalar mods';
+    return false;
+  }
+  if (!loader) {
+    ctx.className = 'browse-context warn';
+    ctx.textContent = `⚠️ Los mods solo los cargan Fabric/Forge/NeoForge. Instala un loader para ${mcVersion} (o selecciona la versión compuesta ya instalada).`;
+    return false;
+  }
+  ctx.className = 'browse-context ok';
+  ctx.textContent = `Instalando para: Minecraft ${mcVersion} · loader: ${loader}`;
+  return true;
+}
+
+/**
+ * Abre el modal de búsqueda de mods
+ */
+async function openModBrowser() {
+  $('browse-modal').style.display = 'flex';
+  updateBrowseContext();
+  $('browse-search-input').focus();
+}
+
+/**
+ * Busca mods en Modrinth con los filtros de la versión seleccionada
+ */
+async function searchMods() {
+  const query = $('browse-search-input').value.trim();
+  if (!query) {
+    notify('Escribe algo para buscar', 'error');
+    return;
+  }
+
+  const { loader, mcVersion } = resolveModTargets();
+  const results = $('browse-results');
+  const btn = $('btn-browse-search');
+
+  btn.disabled = true;
+  results.innerHTML = '<p class="empty-state">Buscando en Modrinth...</p>';
+
+  const result = await invoke('modrinth:search', { query, loader, mcVersion });
+
+  btn.disabled = false;
+  if (!result.success) {
+    results.innerHTML = '<p class="empty-state">Error: ' + escapeHtml(result.error || 'desconocido') + '</p>';
+    return;
+  }
+  renderBrowseResults(result.hits || []);
+}
+
+/**
+ * Renderiza los resultados de la búsqueda
+ */
+function renderBrowseResults(hits) {
+  const results = $('browse-results');
+  if (!hits || hits.length === 0) {
+    results.innerHTML = '<p class="empty-state">Sin resultados.</p>';
+    return;
+  }
+
+  results.innerHTML = hits.map(h => `
+    <div class="browse-item">
+      ${h.iconUrl
+        ? `<img class="browse-icon" src="${escapeHtml(h.iconUrl)}" loading="lazy" />`
+        : '<div class="browse-icon"></div>'}
+      <div class="browse-info">
+        <div class="browse-title">${escapeHtml(h.title)}</div>
+        <div class="browse-meta">
+          por ${escapeHtml(h.author)} · ${formatDownloads(h.downloads)} descargas
+          ${h.categories && h.categories.length ? ' · ' + escapeHtml(h.categories.slice(0, 4).join(', ')) : ''}
+        </div>
+        <div class="browse-desc" title="${escapeHtml(h.description)}">${escapeHtml(h.description)}</div>
+      </div>
+      <button class="btn btn-primary browse-install"
+              data-project="${escapeHtml(h.projectId)}"
+              data-title="${escapeHtml(h.title)}">⬇ Instalar</button>
+    </div>
+  `).join('');
+
+  results.querySelectorAll('.browse-install').forEach(btn => {
+    btn.addEventListener('click', () => installModFromModrinth(btn));
+  });
+}
+
+/**
+ * Instala un mod de Modrinth en la carpeta de mods
+ */
+async function installModFromModrinth(btn) {
+  const { loader, mcVersion } = resolveModTargets();
+  const projectId = btn.dataset.project;
+  const title = btn.dataset.title;
+
+  btn.disabled = true;
+  btn.textContent = 'Instalando...';
+
+  const result = await invoke('modrinth:install', { projectId, title, loader, mcVersion });
+
+  if (result.success) {
+    btn.textContent = '✓ Instalado';
+    notify(result.message, 'success');
+    if (state.selectedVersion) await loadMods(state.selectedVersion);
+  } else {
+    btn.disabled = false;
+    btn.textContent = '⬇ Instalar';
+    notify(result.error, result.alreadyInstalled ? 'info' : 'error');
+  }
+}
+
+/**
+ * Formatea contadores grandes de descargas (1.2M, 340K)
+ */
+function formatDownloads(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return String(n || 0);
+}
+
 // ============= LANZAMIENTO =============
 
 /**
@@ -972,6 +1123,16 @@ function setupEventListeners() {
 
   // Mods
   $('btn-add-mod').addEventListener('click', addMod);
+
+  // Búsqueda de mods (Modrinth)
+  $('btn-browse-mods').addEventListener('click', openModBrowser);
+  $('btn-close-browse').addEventListener('click', () => {
+    $('browse-modal').style.display = 'none';
+  });
+  $('btn-browse-search').addEventListener('click', searchMods);
+  $('browse-search-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') searchMods();
+  });
 
   // Botones de juego
   $('btn-play').addEventListener('click', launchGame);
