@@ -483,8 +483,16 @@ function resolveModTargets() {
   if (!version) return { loader: null, mcVersion: null };
 
   if (isCompositeVersion(version.id)) {
-    const parent = version.parent ||
-      version.id.replace(/-fabric$/, '').split('-forge-')[0];
+    // Versión padre desde el json (fiable); fallback derivando del id
+    let parent = version.parent;
+    if (!parent) {
+      if (version.id.startsWith('neoforge')) {
+        // neoforge-<mc>.0.<build>-beta → <mc>
+        parent = version.id.replace(/^neoforge-/, '').split('.').slice(0, 2).join('.');
+      } else {
+        parent = version.id.replace(/-fabric$/, '').split('-forge-')[0];
+      }
+    }
     let loader = 'fabric';
     if (version.id.startsWith('neoforge')) loader = 'neoforge';
     else if (version.id.includes('-forge')) loader = 'forge';
@@ -593,6 +601,11 @@ function renderBrowseResults(hits) {
  */
 async function installModFromModrinth(btn) {
   const { loader, mcVersion } = resolveModTargets();
+  if (!loader || !mcVersion) {
+    notify('Los mods solo los cargan Fabric/Forge/NeoForge: instala un loader primero', 'error');
+    return;
+  }
+
   const projectId = btn.dataset.project;
   const title = btn.dataset.title;
 
@@ -1164,7 +1177,9 @@ function startNewsTicker() {
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
-  return div.innerHTML;
+  // innerHTML no escapa comillas: añadirlas para que sea seguro usar el
+  // resultado dentro de atributos HTML (data-title, title, etc.)
+  return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function formatBytes(bytes) {

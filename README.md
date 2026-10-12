@@ -8,6 +8,8 @@ Launcher de Minecraft offline construido con **Node.js** y **Electron**. Motor d
 - 👥 **Múltiples perfiles** guardados en JSON local, con exportar/importar
 - 📦 **Instalación completa desde Mojang**: version.json, librerías, assets, natives y JAR del cliente
 - 🧩 **Tres mod loaders**: Fabric (meta.fabricmc.net), Forge y NeoForge (installers oficiales en modo headless)
+- 🔍 **Navegador de mods integrado**: busca e instala cualquier mod de **Modrinth** con un click, filtrado automáticamente por tu versión y loader
+- 🎨 **Skins para perfiles offline**: busca la skin de cualquier jugador por nombre (vía Mojang), previsualízala e instala el soporte (Quick Skin) con un click
 - ☕ **Java autogestionado**: detecta el Java del sistema, verifica su versión contra la que exige cada versión de Minecraft y **descarga automáticamente un JRE de Eclipse Temurin** (Adoptium) si no es compatible
 - 🗂️ **Gestión de versiones**: elimina versiones con su tamaño en disco, protección de dependencias (no puedes borrar la base de un Fabric/Forge) y sincronización con el disco
 - 🧩 **Gestor de mods** en la carpeta estándar `.minecraft/mods` con activar/desactivar (`.jar.disabled`)
@@ -55,7 +57,10 @@ minecraft-launcher/
 │   │   ├── manualLauncher.js        # Motor nativo: descarga, args y spawn de java
 │   │   └── javaRuntime.js           # Versiones de Java + descarga de Temurin
 │   ├── mods/
-│   │   └── modManager.js            # Gestión de mods .jar
+│   │   ├── modManager.js            # Gestión de mods .jar
+│   │   └── modrinthApi.js           # Búsqueda e instalación desde Modrinth
+│   ├── skins/
+│   │   └── skinManager.js           # Skins por nombre (cadena Mojang) + biblioteca local
 │   └── ui/
 │       ├── configManager.js         # Configuración persistente
 │       └── preload.js               # Bridge IPC seguro (whitelist de canales)
@@ -94,10 +99,18 @@ minecraft-launcher/
 ### 3. Añadir mods
 
 1. Selecciona una versión con loader instalado
-2. Click en **"+"** junto a "Mods" en el panel derecho
-3. Selecciona el archivo `.jar` del mod → se copia a `.minecraft/mods`
+2. **🔍 Buscar en Modrinth**: busca cualquier mod (sodium, jei, shaders...), filtra por tu versión/loader automáticamente e instala con un click
+3. O añade un `.jar` local con **"+"** → se copia a `.minecraft/mods`
 4. Usa el toggle para activar/desactivar, 🗑 para eliminar
 5. Vanilla ignora los mods: solo Fabric/Forge/NeoForge los cargan
+
+### 3b. Cambiar skin
+
+1. Click en **🎨** junto a tu perfil
+2. Si no tienes el soporte, **"Instalar soporte de skins (Quick Skin)"** con un click
+3. Escribe el nombre de cualquier jugador premium (ej: `Notch`) → preview con recorte de la cara + modelo (Clásico/Slim)
+4. La skin queda en `.minecraft/skins/` — dentro del juego, aplícala desde el menú de Quick Skin
+5. Las skins solo funcionan con loader (en vanilla todos son Steve/Alex)
 
 ### 4. Jugar
 
@@ -213,7 +226,7 @@ npm run dev
 ## 🔒 Seguridad
 
 - `contextIsolation: true`, `nodeIntegration: false`, `sandbox: true`
-- El preload expone solo canales IPC con **whitelist** (24 canales `invoke` + 2 de escucha)
+- El preload expone solo canales IPC con **whitelist** (28 canales `invoke` + 2 de escucha)
 - CSP estricta: `script-src 'self'` (sin scripts inline)
 - Navegación externa y ventanas emergentes bloqueadas
 - Extracción de ZIP con protección contra path traversal
