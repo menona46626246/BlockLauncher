@@ -223,6 +223,20 @@ html, body {
   background: #4a2a2a;
 }
 
+.profile-skin {
+  background: transparent;
+  border: none;
+  color: #5bc0de;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.profile-skin:hover {
+  background: #2a3a4a;
+}
+
 /* Formulario de nuevo perfil */
 .new-profile-form {
   background: #333;
@@ -664,6 +678,68 @@ html, body {
 .browse-install:disabled {
   background: #555;
   cursor: not-allowed;
+}
+
+/* ============ SKINS ============ */
+
+.skin-preview {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+
+/* Recorte de la cabeza del PNG de skin (región 8,8 - 16,16) escalado x12 */
+.skin-head {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background-repeat: no-repeat;
+  background-size: 768px 768px;
+  background-position: -96px -96px;
+  image-rendering: pixelated;
+  background-color: #2a2a2a;
+}
+
+.skin-full {
+  width: 128px;
+  height: 128px;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+  border-radius: 8px;
+  background: #2a2a2a;
+}
+
+.skin-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.skin-player-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.skin-model {
+  font-size: 12px;
+  color: #5bc0de;
+  margin: 4px 0;
+}
+
+.skin-saved {
+  font-size: 11px;
+  color: #5cb85c;
+  word-break: break-all;
+}
+
+.skin-actions {
+  margin-top: 6px;
 }
 
 /* Slider de memoria */

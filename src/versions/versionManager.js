@@ -947,6 +947,13 @@ class VersionManager {
   }
 
   /**
+   * Versión pública del directorio raíz (para otros módulos del main)
+   */
+  async getMinecraftRoot() {
+    return this._getMinecraftRoot();
+  }
+
+  /**
    * Calcula recursivamente el tamaño en bytes de un directorio
    * @private
    */

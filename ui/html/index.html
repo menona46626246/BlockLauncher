@@ -254,6 +254,46 @@
 
   </div>
 
+    <!-- ============ MODAL DE SKINS ============ -->
+    <div id="skin-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>🎨 Cambiar skin</h2>
+          <button id="btn-close-skin" class="icon-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="skin-support-status" class="browse-context"></div>
+
+          <div class="browse-search-row">
+            <input type="text" id="skin-username-input" class="browse-search-input"
+                   placeholder="Nombre del jugador (ej: Notch)" maxlength="16" />
+            <button id="btn-skin-search" class="btn btn-primary">Buscar skin</button>
+          </div>
+
+          <div id="skin-preview" class="skin-preview" style="display: none;">
+            <div id="skin-head" class="skin-head"></div>
+            <img id="skin-full" class="skin-full" alt="Skin completa" />
+            <div class="skin-info">
+              <div id="skin-player" class="skin-player-name"></div>
+              <div id="skin-model" class="skin-model"></div>
+              <div id="skin-saved" class="skin-saved"></div>
+            </div>
+          </div>
+
+          <div class="skin-actions">
+            <button id="btn-install-skin-support" class="btn btn-primary">⬇ Instalar soporte de skins (Quick Skin)</button>
+          </div>
+
+          <p class="versions-hint">
+            ℹ️ La skin se guarda en la carpeta <code>skins/</code> de tu Minecraft.
+            Dentro del juego abre el menú de Quick Skin y aplícala (por nombre o
+            importando el archivo). Las skins solo funcionan con
+            Fabric/Forge/NeoForge — en vanilla todos son Steve/Alex.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- ============ MODAL DE BÚSQUEDA DE MODS (Modrinth) ============ -->
     <div id="browse-modal" class="modal" style="display: none;">
       <div class="modal-content modal-content-lg">

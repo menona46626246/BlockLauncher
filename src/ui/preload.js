@@ -36,7 +36,9 @@ const INVOKE_CHANNELS = [
   'mods:delete',
   'mods:select-file',
   'modrinth:search',
-  'modrinth:install'
+  'modrinth:install',
+  'skins:fetch',
+  'skins:install-support'
 ];
 
 // Canales que el renderer puede escuchar (webContents.send)

@@ -100,13 +100,14 @@ function renderProfiles() {
   }
 
   container.innerHTML = state.profiles.map(p => `
-    <div class="profile-item ${p.id === state.activeProfileId ? 'active' : ''}" 
+    <div class="profile-item ${p.id === state.activeProfileId ? 'active' : ''}"
          data-id="${p.id}">
       <div class="profile-avatar">${p.nickname.charAt(0).toUpperCase()}</div>
       <div class="profile-info">
         <div class="profile-name">${escapeHtml(p.nickname)}</div>
         <div class="profile-uuid">${p.uuid.substring(0, 8)}...</div>
       </div>
+      <button class="profile-skin" data-id="${p.id}" title="Cambiar skin">🎨</button>
       <button class="profile-delete" data-id="${p.id}" title="Eliminar">🗑</button>
     </div>
   `).join('');
@@ -115,6 +116,7 @@ function renderProfiles() {
   container.querySelectorAll('.profile-item').forEach(item => {
     item.addEventListener('click', (e) => {
       if (e.target.classList.contains('profile-delete')) return;
+      if (e.target.classList.contains('profile-skin')) return;
       selectProfile(item.dataset.id);
     });
   });
@@ -123,6 +125,13 @@ function renderProfiles() {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       deleteProfile(btn.dataset.id);
+    });
+  });
+
+  container.querySelectorAll('.profile-skin').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openSkinModal(btn.dataset.id);
     });
   });
 }
@@ -610,6 +619,129 @@ function formatDownloads(n) {
   if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
   if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
   return String(n || 0);
+}
+
+// ============= SKINS =============
+
+/**
+ * ¿Está instalado el mod de soporte de skins?
+ */
+function isSkinSupportInstalled() {
+  return state.mods.some(m => /quick[\s_-]?skin/i.test(m.realName || ''));
+}
+
+/**
+ * Actualiza la línea de estado del modal de skins
+ */
+function updateSkinSupportStatus() {
+  const status = $('skin-support-status');
+  const installBtn = $('btn-install-skin-support');
+
+  if (isSkinSupportInstalled()) {
+    status.className = 'browse-context ok';
+    status.textContent = '✓ Soporte de skins instalado (Quick Skin)';
+    installBtn.style.display = 'none';
+    return;
+  }
+
+  const { loader, mcVersion } = resolveModTargets();
+  if (!mcVersion) {
+    status.className = 'browse-context warn';
+    status.textContent = '⚠️ Selecciona una versión para instalar el soporte de skins';
+  } else if (!loader) {
+    status.className = 'browse-context warn';
+    status.textContent = `⚠️ Las skins requieren un mod: instala Fabric/Forge/NeoForge para ${mcVersion} primero`;
+  } else {
+    status.className = 'browse-context warn';
+    status.textContent = `⚠️ Falta el mod Quick Skin para Minecraft ${mcVersion} (${loader})`;
+  }
+  installBtn.style.display = loader ? 'flex' : 'none';
+}
+
+/**
+ * Abre el modal de skins
+ */
+function openSkinModal(profileId) {
+  const profile = state.profiles.find(p => p.id === profileId);
+  $('skin-modal').style.display = 'flex';
+  $('skin-preview').style.display = 'none';
+  $('skin-username-input').focus();
+  if (profile) {
+    $('skin-username-input').placeholder = `Nombre del jugador (ej: ${profile.nickname})`;
+  }
+  updateSkinSupportStatus();
+}
+
+/**
+ * Busca la skin de un jugador y la previsualiza
+ */
+async function searchSkin() {
+  const username = $('skin-username-input').value.trim();
+  if (!username) {
+    notify('Escribe un nombre de jugador', 'error');
+    return;
+  }
+
+  const btn = $('btn-skin-search');
+  btn.disabled = true;
+  btn.textContent = 'Buscando...';
+
+  const result = await invoke('skins:fetch', { username });
+
+  btn.disabled = false;
+  btn.textContent = 'Buscar skin';
+
+  if (!result.success) {
+    notify(result.error, 'error');
+    return;
+  }
+
+  renderSkinPreview(result);
+}
+
+/**
+ * Muestra la preview de la skin encontrada
+ */
+function renderSkinPreview(skin) {
+  $('skin-preview').style.display = 'flex';
+
+  // Recorte de la cabeza (región 8,8-16,16 del PNG 64x64) y skin completa
+  $('skin-head').style.backgroundImage = `url("${skin.dataUrl}")`;
+  $('skin-full').src = skin.dataUrl;
+
+  $('skin-player').textContent = `👤 ${skin.playerName}`;
+  $('skin-model').textContent = `Modelo: ${skin.model === 'slim' ? 'Slim (brazos finos)' : 'Clásico'}`;
+  $('skin-saved').textContent = `💾 Guardada en skins/${skin.fileName}`;
+
+  notify(skin.message, 'success');
+}
+
+/**
+ * Instala el mod de soporte de skins (Quick Skin) para la versión activa
+ */
+async function installSkinSupport() {
+  const { loader, mcVersion } = resolveModTargets();
+  if (!loader || !mcVersion) {
+    notify('Selecciona una versión con mod loader primero', 'error');
+    return;
+  }
+
+  const btn = $('btn-install-skin-support');
+  btn.disabled = true;
+  btn.textContent = 'Instalando...';
+
+  const result = await invoke('skins:install-support', { loader, mcVersion });
+
+  btn.disabled = false;
+  btn.textContent = '⬇ Instalar soporte de skins (Quick Skin)';
+
+  if (result.success) {
+    notify(result.message, 'success');
+    if (state.selectedVersion) await loadMods(state.selectedVersion);
+    updateSkinSupportStatus();
+  } else {
+    notify(result.error, result.alreadyInstalled ? 'info' : 'error');
+  }
 }
 
 // ============= LANZAMIENTO =============
@@ -1133,6 +1265,16 @@ function setupEventListeners() {
   $('browse-search-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') searchMods();
   });
+
+  // Skins
+  $('btn-close-skin').addEventListener('click', () => {
+    $('skin-modal').style.display = 'none';
+  });
+  $('btn-skin-search').addEventListener('click', searchSkin);
+  $('skin-username-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') searchSkin();
+  });
+  $('btn-install-skin-support').addEventListener('click', installSkinSupport);
 
   // Botones de juego
   $('btn-play').addEventListener('click', launchGame);

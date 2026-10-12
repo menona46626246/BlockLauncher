@@ -31,6 +31,7 @@ const VersionManager = require('./src/versions/versionManager');
 const ModManager = require('./src/mods/modManager');
 const ConfigManager = require('./src/ui/configManager');
 const ModrinthApi = require('./src/mods/modrinthApi');
+const SkinManager = require('./src/skins/skinManager');
 
 // Variable global para la ventana principal
 let mainWindow = null;
@@ -41,6 +42,7 @@ let versionManager = null;
 let modManager = null;
 let configManager = null;
 const modrinth = new ModrinthApi();
+const skinManager = new SkinManager();
 
 /**
  * Función que crea la ventana principal del launcher
@@ -495,6 +497,35 @@ function setupIpcHandlers() {
         return await modrinth.install({ ...options, modsDir });
       } catch (error) {
         console.error('[IPC modrinth:install]', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    // ========== HANDLERS DE SKINS ==========
+
+    // Buscar y descargar la skin de un jugador por su nombre
+    ipcMain.handle('skins:fetch', async (event, options = {}) => {
+      try {
+        const mcRoot = await versionManager.getMinecraftRoot();
+        return await skinManager.fetchSkin({ ...options, mcRoot });
+      } catch (error) {
+        console.error('[IPC skins:fetch]', error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    // Instalar el mod de soporte de skins (Quick Skin) para la versión activa
+    ipcMain.handle('skins:install-support', async (event, options = {}) => {
+      try {
+        const modsDir = await modManager.getModsDirectory();
+        return await modrinth.install({
+          projectId: 'quick-skin',
+          title: 'Quick Skin',
+          ...options,
+          modsDir
+        });
+      } catch (error) {
+        console.error('[IPC skins:install-support]', error);
         return { success: false, error: error.message };
       }
     });
